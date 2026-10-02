@@ -1,0 +1,69 @@
+{
+  "trace_id": "trace_1790941665_check_weather_&_flight_(travel)",
+  "task_name": "Check Weather & Flight (Travel)",
+  "created_at": "2026-10-02 17:17:45",
+  "total_steps": 3,
+  "total_redactions": 0,
+  "final_hash": "becd6d80c1eb42c99f3b14149617f8633023768c3a6a8ca4e5155ffb86ba63c2",
+  "signature": "5204e67bf4c7c75fa161e02b200c09968bd36b4cb8ad89853422a7f4fd930e70",
+  "steps": [
+    {
+      "step_index": 1,
+      "timestamp": "2026-10-02 17:17:45",
+      "tool_name": "get_weather",
+      "inputs": {
+        "city": "chennai"
+      },
+      "output": {
+        "temp_c": 31.5,
+        "condition": "Partly Cloudy",
+        "humidity": 78,
+        "wind_kmh": 14
+      },
+      "duration_ms": 0.02,
+      "redactions_count": 0,
+      "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+      "step_hash": "067ce04c40373fb1900f9a871d3d4ca5c0ea362ab861bf2ee75a1dc069436d66"
+    },
+    {
+      "step_index": 2,
+      "timestamp": "2026-10-02 17:17:45",
+      "tool_name": "check_flight_status",
+      "inputs": {
+        "flight_no": "AI-542",
+        "weather_condition": "Partly Cloudy"
+      },
+      "output": {
+        "flight_no": "AI-542",
+        "scheduled_time": "18:45 IST",
+        "gate": "T2-G14",
+        "status": "ON_TIME",
+        "delay_minutes": 0
+      },
+      "duration_ms": 0.01,
+      "redactions_count": 0,
+      "prev_hash": "067ce04c40373fb1900f9a871d3d4ca5c0ea362ab861bf2ee75a1dc069436d66",
+      "step_hash": "c1f5639ef7e3dd3f1c9845373e38f208fbc0d62c2e65fceec676b9991c12cf0d"
+    },
+    {
+      "step_index": 3,
+      "timestamp": "2026-10-02 17:17:45",
+      "tool_name": "send_customer_notification",
+      "inputs": {
+        "recipient": "+91-9876543210",
+        "message": "Flight AI-542 is currently ON_TIME at 18:45 IST."
+      },
+      "output": {
+        "status": "DISPATCHED",
+        "channel": "SMS_GATEWAY",
+        "recipient": "+91-9876543210",
+        "delivered_at": "2026-10-02 17:17:45",
+        "sms_provider_id": "MSG91-AUTH-TOKEN-SEC8877"
+      },
+      "duration_ms": 0.02,
+      "redactions_count": 0,
+      "prev_hash": "c1f5639ef7e3dd3f1c9845373e38f208fbc0d62c2e65fceec676b9991c12cf0d",
+      "step_hash": "becd6d80c1eb42c99f3b14149617f8633023768c3a6a8ca4e5155ffb86ba63c2"
+    }
+  ]
+}

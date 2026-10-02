@@ -1,0 +1,79 @@
+{
+  "trace_id": "trace_1790941826_process_order_refund_(e-commerce)",
+  "task_name": "Process Order Refund (E-Commerce)",
+  "created_at": "2026-10-02 17:20:26",
+  "total_steps": 3,
+  "total_redactions": 5,
+  "final_hash": "8f0ff939af0d10cb29f8ccee04e52c9e9dde8ed8e8548065a968bf52a34bbf83",
+  "signature": "3f2cbc0a1d5d28200bd603106890ba8088d62a536daea3fd4b5c79fd590c5d64",
+  "steps": [
+    {
+      "step_index": 1,
+      "timestamp": "2026-10-02 17:20:26",
+      "tool_name": "fetch_order_details",
+      "inputs": {
+        "order_id": "ORD-9842"
+      },
+      "output": {
+        "order_id": "ORD-9842",
+        "customer": "Kavitha Rajan",
+        "email": "[REDACTED_EMAIL]",
+        "item": "Mechanical Ergonomic Keyboard",
+        "purchase_amount": 129.99,
+        "purchase_days_ago": 12,
+        "status": "DELIVERED",
+        "secret_token": "[REDACTED_SECRET]",
+        "card_token": "[REDACTED_SECRET]"
+      },
+      "duration_ms": 0.0,
+      "redactions_count": 3,
+      "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+      "step_hash": "80266f6f05273b2b81cbaac91f3261ba669e214ad504ad544614d2be6e2a8bc2"
+    },
+    {
+      "step_index": 2,
+      "timestamp": "2026-10-02 17:20:26",
+      "tool_name": "validate_refund_policy",
+      "inputs": {
+        "order_id": "ORD-9842",
+        "purchase_days_ago": 12,
+        "item_condition": "UNOPENED"
+      },
+      "output": {
+        "order_id": "ORD-9842",
+        "is_eligible": true,
+        "refund_window_days": 30,
+        "days_elapsed": 12,
+        "policy_code": "POL_30DAY_SATISFACTION",
+        "authorization_status": "APPROVED"
+      },
+      "duration_ms": 0.0,
+      "redactions_count": 0,
+      "prev_hash": "80266f6f05273b2b81cbaac91f3261ba669e214ad504ad544614d2be6e2a8bc2",
+      "step_hash": "db64194af44019b73b8d7b4e227fb0fb0eafbf5d9d54b2ad7c04855f5018f646"
+    },
+    {
+      "step_index": 3,
+      "timestamp": "2026-10-02 17:20:26",
+      "tool_name": "process_refund",
+      "inputs": {
+        "order_id": "ORD-9842",
+        "amount": 129.99,
+        "card_token": "[REDACTED_SECRET]"
+      },
+      "output": {
+        "transaction_id": "TXN-REF-1790941826",
+        "order_id": "ORD-9842",
+        "refunded_amount": 129.99,
+        "currency": "USD",
+        "destination_token": "[REDACTED_PAYMENT_TOKEN]",
+        "status": "SUCCESS",
+        "gateway_response": "200_OK_PAYMENT_REVERSED"
+      },
+      "duration_ms": 0.0,
+      "redactions_count": 2,
+      "prev_hash": "db64194af44019b73b8d7b4e227fb0fb0eafbf5d9d54b2ad7c04855f5018f646",
+      "step_hash": "8f0ff939af0d10cb29f8ccee04e52c9e9dde8ed8e8548065a968bf52a34bbf83"
+    }
+  ]
+}

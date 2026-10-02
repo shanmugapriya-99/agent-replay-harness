@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Agent Replay & Verification Harness</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/styles.css">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans antialiased selection:bg-indigo-500 selection:text-white">
+
+  <!-- Top Navigation Header -->
+  <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-cyan-400 flex items-center justify-center shadow-lg shadow-indigo-500/20 text-white font-bold text-xl">
+          ⚡
+        </div>
+        <div>
+          <div class="flex items-center space-x-2">
+            <h1 class="text-lg font-bold tracking-tight text-white">AGENT REPLAY HARNESS</h1>
+            <span class="px-2 py-0.5 text-xs font-semibold bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 rounded-full">v1.0 Audit</span>
+          </div>
+          <p class="text-xs text-slate-400">AI Observability, Deterministic Replay & Tamper Detection</p>
+        </div>
+      </div>
+
+      <!-- Quick Stats & Actions -->
+      <div class="flex items-center space-x-3">
+        <label for="scenarioSelect" class="text-xs text-slate-400 font-medium hidden sm:inline">Scenario:</label>
+        <select id="scenarioSelect" class="bg-slate-800 border border-slate-700 text-slate-200 text-xs rounded-lg px-3 py-1.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none cursor-pointer">
+          <option value="refund">📦 E-Commerce Refund Agent</option>
+          <option value="weather">✈️ Weather & Travel Advisor</option>
+          <option value="devops">🖥️ Cloud SRE Auto-Healer</option>
+        </select>
+        <button id="btnReset" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 px-3 py-1.5 rounded-lg transition-colors flex items-center space-x-1.5" title="Reset to clean baseline">
+          <span>↺</span>
+          <span class="hidden md:inline">Reset</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+
+    <!-- Action Control Bar -->
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-xl flex flex-wrap items-center justify-between gap-4">
+      <div class="flex flex-wrap items-center gap-2.5">
+        <!-- 1. Run Agent -->
+        <button id="btnRunAgent" class="bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-sm px-4 py-2 rounded-xl transition-all shadow-lg shadow-indigo-600/30 flex items-center space-x-2 active:scale-95">
+          <span>▶</span>
+          <span>1. Run Agent (Record)</span>
+        </button>
+
+        <!-- 2. Replay Trace -->
+        <button id="btnReplay" class="bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-sm px-4 py-2 rounded-xl transition-all shadow-lg shadow-emerald-600/30 flex items-center space-x-2 active:scale-95">
+          <span>🔄</span>
+          <span>2. Replay Trace</span>
+        </button>
+
+        <!-- 3. Verify Hash Integrity -->
+        <button id="btnVerify" class="bg-cyan-600 hover:bg-cyan-500 text-white font-medium text-sm px-4 py-2 rounded-xl transition-all shadow-lg shadow-cyan-600/30 flex items-center space-x-2 active:scale-95">
+          <span>🛡️</span>
+          <span>3. Verify Trace</span>
+        </button>
+      </div>
+
+      <!-- Demo Attack & Drift Simulation Controls -->
+      <div class="flex items-center gap-2 border-t md:border-t-0 md:border-l border-slate-800 pt-3 md:pt-0 md:pl-4">
+        <span class="text-xs uppercase font-semibold text-slate-500 tracking-wider">Chaos & Security Demo:</span>
+        <button id="btnSimulateDrift" class="bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 font-medium text-xs px-3 py-1.5 rounded-lg transition-colors flex items-center space-x-1.5 active:scale-95" title="Force mock tool to return unexpected output to demonstrate Divergence Detection">
+          <span>⚡</span>
+          <span>Simulate Drift</span>
+        </button>
+        <button id="btnSimulateTamper" class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 font-medium text-xs px-3 py-1.5 rounded-lg transition-colors flex items-center space-x-1.5 active:scale-95" title="Directly alter stored JSON payload on disk to demonstrate Tampering Detection">
+          <span>⚠️</span>
+          <span>Tamper Trace File</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Live Verdict Notification Banner -->
+    <div id="verdictBanner" class="hidden rounded-xl border p-4 transition-all duration-300 flex items-start space-x-3.5 shadow-lg">
+      <div id="verdictIcon" class="text-2xl flex-shrink-0">ℹ️</div>
+      <div class="flex-1">
+        <div class="flex items-center justify-between">
+          <h2 id="verdictTitle" class="text-sm font-bold uppercase tracking-wider">SYSTEM STATUS</h2>
+          <span id="verdictTimestamp" class="text-xs font-mono opacity-70"></span>
+        </div>
+        <p id="verdictMessage" class="text-xs mt-1 leading-relaxed"></p>
+      </div>
+    </div>
+
+    <!-- Metadata Badges Bar -->
+    <div id="metaBar" class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-3">
+        <div class="text-slate-400 text-[11px] uppercase tracking-wider font-semibold">Active Trace ID</div>
+        <div id="metaTraceId" class="font-mono text-slate-200 mt-1 truncate">None (Click Run Agent)</div>
+      </div>
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-3">
+        <div class="text-slate-400 text-[11px] uppercase tracking-wider font-semibold">Recorded Steps</div>
+        <div id="metaStepsCount" class="font-mono text-slate-200 mt-1 font-semibold">0 Steps</div>
+      </div>
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-3">
+        <div class="text-slate-400 text-[11px] uppercase tracking-wider font-semibold">Redacted Secrets</div>
+        <div id="metaRedactionsCount" class="font-mono text-amber-400 mt-1 font-semibold">0 Protected</div>
+      </div>
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-3">
+        <div class="text-slate-400 text-[11px] uppercase tracking-wider font-semibold">HMAC Signature</div>
+        <div id="metaSignature" class="font-mono text-cyan-400 mt-1 truncate">Pending Run...</div>
+      </div>
+    </div>
+
+    <!-- Main Side-by-Side Verification Workspace -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+      <!-- LEFT: Recorded Baseline Trace -->
+      <section class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl flex flex-col">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-800 mb-4">
+          <div class="flex items-center space-x-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-indigo-500 animate-pulse"></span>
+            <h3 class="font-bold text-sm tracking-wide text-slate-200">1. RECORDED TRACE (GOLDEN BASELINE)</h3>
+          </div>
+          <span class="text-xs px-2 py-0.5 bg-slate-800 text-slate-400 rounded border border-slate-700 font-mono">Original Run</span>
+        </div>
+
+        <div id="recordedStepsContainer" class="space-y-4 flex-1 overflow-y-auto max-h-[620px] pr-1">
+          <!-- Step cards injected dynamically -->
+          <div class="text-center py-16 text-slate-500 text-xs">
+            No trace recorded yet.<br>Click <strong class="text-indigo-400">"1. Run Agent"</strong> above to record execution!
+          </div>
+        </div>
+      </section>
+
+      <!-- RIGHT: Replay Execution & Diff Engine -->
+      <section class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl flex flex-col">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-800 mb-4">
+          <div class="flex items-center space-x-2">
+            <span id="replayIndicator" class="w-2.5 h-2.5 rounded-full bg-slate-600"></span>
+            <h3 class="font-bold text-sm tracking-wide text-slate-200">2. REPLAY HARNESS & DIVERGENCE DIFF</h3>
+          </div>
+          <span id="replayBadge" class="text-xs px-2 py-0.5 bg-slate-800 text-slate-400 rounded border border-slate-700 font-mono">Awaiting Replay</span>
+        </div>
+
+        <div id="replayStepsContainer" class="space-y-4 flex-1 overflow-y-auto max-h-[620px] pr-1">
+          <!-- Replay comparison cards injected dynamically -->
+          <div class="text-center py-16 text-slate-500 text-xs">
+            No replay executed yet.<br>Click <strong class="text-emerald-400">"2. Replay Trace"</strong> to verify determinism!
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Cryptographic Hash Chain & Audit Log Visualizer -->
+    <section class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800 mb-4">
+        <div class="flex items-center space-x-2">
+          <span class="text-cyan-400">🔗</span>
+          <h3 class="font-bold text-sm tracking-wide text-slate-200">CRYPTOGRAPHIC STEP-WISE HASH CHAIN (TAMPER AUDIT)</h3>
+        </div>
+        <div id="cryptoStatusBadge" class="text-xs px-2.5 py-1 bg-slate-800 text-slate-400 rounded-lg border border-slate-700 font-mono">
+          Chain Uninitialized
+        </div>
+      </div>
+
+      <p class="text-xs text-slate-400 mb-4">
+        Every agent step is cryptographically linked to the previous block hash via <strong>SHA-256</strong>, finalized by an <strong>HMAC signature</strong>. If an attacker modifies even 1 character inside a stored trace file, the chain breaks at that exact step.
+      </p>
+
+      <!-- Interactive Block Chain Visualizer -->
+      <div id="hashChainContainer" class="flex flex-wrap items-center gap-3 py-2 overflow-x-auto">
+        <div class="text-slate-500 text-xs font-mono">Run agent to generate blockchain audit trail.</div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Notification Toast -->
+  <div id="toast" class="fixed bottom-5 right-5 z-50 hidden max-w-sm bg-slate-800 text-slate-100 border border-slate-700 px-4 py-3 rounded-xl shadow-2xl text-xs flex items-center space-x-3 transition-opacity">
+    <span id="toastIcon">🚀</span>
+    <span id="toastMsg" class="flex-1">Notification</span>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
